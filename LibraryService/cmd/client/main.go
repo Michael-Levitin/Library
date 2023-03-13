@@ -31,17 +31,17 @@ func main() {
 	booksByAuthor, err := grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
 		Name: "Толстой",
 	})
-	printAnswer(booksByAuthor.Book, err)
+	printAnswer(booksByAuthor.Books, err)
 
 	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
 		Name: "Лев Толстой",
 	})
-	printAnswer(booksByAuthor.Book, err)
+	printAnswer(booksByAuthor.Books, err)
 
 	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
 		Name: "Чехов",
 	})
-	printAnswer(booksByAuthor.Book, err)
+	printAnswer(booksByAuthor.Books, err)
 
 	booksByTitle, err := grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
 		Title: "человек",
@@ -62,8 +62,8 @@ func printAnswer(books []*pb.Book, err error) {
 	if len(books) == 0 {
 		return
 	}
-	fmt.Println("\nАвтор\t\t\t\tНазвание")
+	fmt.Println("\nАвтор\t\tНазвание")
 	for _, book := range books {
-		fmt.Println(book.Name, book.Title)
+		fmt.Println(book.Name, "-", book.Title)
 	}
 }

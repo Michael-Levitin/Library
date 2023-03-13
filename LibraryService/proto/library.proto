@@ -21,7 +21,7 @@ message GetBooksRequest{
 }
 
 message GetBooksResponse{
-  repeated Book book = 1;
+  repeated Book books = 1;
 }
 
 message Book{
