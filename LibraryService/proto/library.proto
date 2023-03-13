@@ -1,0 +1,30 @@
+syntax = "proto3";
+package library.search.v1;
+option go_package = "github.com/Michael-Levitin/Library/LibraryService/proto;";
+
+service LibrarySearch {
+  rpc GetAuthor (GetAuthorRequest) returns (GetAuthorResponse);
+  rpc GetBooks(GetBooksRequest) returns (GetBooksResponse);
+}
+
+message GetAuthorRequest {
+  string title = 1;
+}
+
+message GetAuthorResponse{
+  repeated Book books = 1;
+}
+
+
+message GetBooksRequest{
+  string name = 1;
+}
+
+message GetBooksResponse{
+  repeated Book book = 1;
+}
+
+message Book{
+  string name = 1;
+  string title = 2;
+}
