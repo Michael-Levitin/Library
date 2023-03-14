@@ -3,7 +3,7 @@ module github.com/Michael-Levitin/Library/LibraryService
 go 1.18
 
 require (
-	github.com/by-sabbir/grpc-service-example v0.0.0-20220926124242-62a45f384d4d
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/stretchr/testify v1.8.2
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.0
