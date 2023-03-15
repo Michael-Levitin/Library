@@ -9,3 +9,6 @@ run:
     -v mysql:/var/lib/mysql \
     mysql:latest
 
+stop:
+	docker stop library_d
+
