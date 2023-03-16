@@ -1,14 +1,12 @@
 build:
-	docker build -t library_d .
+	docker build -t library .
 
 run:
-	docker run --name library_d -d \
-	-p 3307:3307 \
-	-e MYSQL_ROOT_PASSWORD=root \
-    --restart unless-stopped \
-    -v mysql:/var/lib/mysql \
-    mysql:latest
+	docker run -d -p 3307:3306 --name library \
+	-e MYSQL_ROOT_PASSWORD=password \
+	--restart unless-stopped \
+    library
 
 stop:
-	docker stop library_d
-
+	docker stop library
+	docker rm library

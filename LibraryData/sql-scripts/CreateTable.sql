@@ -10,6 +10,7 @@ CREATE TABLE `authors`
     `name` VARCHAR(255) NOT NULL
 );
 
+
 CREATE TABLE `books`
 (
     `id`        INT(11)      NOT NULL AUTO_INCREMENT PRIMARY KEY,

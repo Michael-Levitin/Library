@@ -1,12 +1,8 @@
+# Берем за основу последнюю версию докер образа MySQL
 FROM mysql:latest
+
+# Добавляем базу
 ENV MYSQL_DATABASE library
-COPY tables.sql /docker-entrypoint-initdb.d/
-COPY demo.sql /docker-entrypoint-initdb.d/
 
-EXPOSE 3307
-
-CMD ["mysqld", "--port=3307", "--datadir=/var/lib/mysql", "--user=mysql"]
-
-
-
-
+#Добавляем скрипты в docker-entrypoint-initdb.d/ они будут выполнены автоматически при запуске контеинера
+COPY ./sql-scripts/ /docker-entrypoint-initdb.d/
