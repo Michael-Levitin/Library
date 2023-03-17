@@ -29,27 +29,27 @@ func main() {
 	grpcClient := pb.NewLibrarySearchClient(conn)
 
 	booksByAuthor, err := grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Толстой",
+		Name: "Tolstoy",
 	})
 	printAnswer(booksByAuthor.Books, err)
 
 	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Лев Толстой",
+		Name: "Lev Tolstoy",
 	})
 	printAnswer(booksByAuthor.Books, err)
 
 	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Чехов",
+		Name: "Chekhov",
 	})
 	printAnswer(booksByAuthor.Books, err)
 
 	booksByTitle, err := grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
-		Title: "человек",
+		Title: "Man",
 	})
 	printAnswer(booksByTitle.Books, err)
 
 	booksByTitle, err = grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
-		Title: "Человек-амфибия",
+		Title: "Amphibian Man",
 	})
 	printAnswer(booksByTitle.Books, err)
 
@@ -62,7 +62,7 @@ func printAnswer(books []*pb.Book, err error) {
 	if len(books) == 0 {
 		return
 	}
-	fmt.Println("\nАвтор\t\tНазвание")
+	fmt.Println("\nAuthor\t\tTitle")
 	for _, book := range books {
 		fmt.Println(book.Name, "-", book.Title)
 	}
