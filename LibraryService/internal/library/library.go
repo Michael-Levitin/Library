@@ -2,7 +2,6 @@ package library
 
 import (
 	"context"
-	"fmt"
 	"github.com/Michael-Levitin/Library/LibraryService/internal/logic"
 	ob "github.com/Michael-Levitin/Library/LibraryService/internal/objects"
 	pb "github.com/Michael-Levitin/Library/LibraryService/proto"
@@ -22,7 +21,6 @@ func (s *LibraryServer) GetAuthor(ctx context.Context, in *pb.GetAuthorRequest) 
 	log.Println("getting author for", in)
 	title := in.GetTitle()
 	books, err := s.logic.GetAuthor(ctx, title)
-	fmt.Println("books", books)
 	return &pb.GetAuthorResponse{Books: transferBooks(books)}, err
 }
 
@@ -30,7 +28,6 @@ func (s *LibraryServer) GetBooks(ctx context.Context, in *pb.GetBooksRequest) (*
 	log.Println("getting books for", in)
 	author := in.GetName()
 	books, err := s.logic.GetTitle(ctx, author)
-	fmt.Println("books", books)
 	return &pb.GetBooksResponse{Books: transferBooks(books)}, err
 }
 

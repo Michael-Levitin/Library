@@ -17,6 +17,7 @@ var (
 )
 
 func main() {
+	// подключаемся к grpc серверу
 	addr := fmt.Sprintf("%s:%s", host, port)
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
@@ -43,6 +44,11 @@ func main() {
 	})
 	printAnswer(booksByAuthor.Books, err)
 
+	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
+		Name: "1235",
+	})
+	printAnswer(booksByAuthor.Books, err)
+
 	booksByTitle, err := grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
 		Title: "Man",
 	})
@@ -53,13 +59,18 @@ func main() {
 	})
 	printAnswer(booksByTitle.Books, err)
 
+	booksByTitle, err = grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
+		Title: "45554",
+	})
+	printAnswer(booksByTitle.Books, err)
 }
 
 func printAnswer(books []*pb.Book, err error) {
+	fmt.Println("==============================================")
 	if err != nil {
 		log.Println("failed to execute request: ", err)
 	}
-	if len(books) == 0 {
+	if books == nil || len(books) == 0 {
 		return
 	}
 	fmt.Println("\nAuthor\t\tTitle")
