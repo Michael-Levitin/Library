@@ -2,34 +2,45 @@ package library
 
 import (
 	"context"
+	"fmt"
+	"github.com/Michael-Levitin/Library/LibraryService/internal/logic"
+	ob "github.com/Michael-Levitin/Library/LibraryService/internal/objects"
 	pb "github.com/Michael-Levitin/Library/LibraryService/proto"
 	"log"
 )
 
-type Library interface {
-	GetAuthor(context.Context, *pb.GetAuthorRequest) (*pb.GetAuthorResponse, error)
-	GetBooks(context.Context, *pb.GetBooksRequest) (*pb.GetBooksResponse, error)
+type LibraryServer struct {
+	pb.UnimplementedLibrarySearchServer
+	logic logic.LibraryLogic
 }
 
-type Server struct {
-	pb.LibrarySearchServer
+func NewLibraryServer(logic logic.LibraryLogic) *LibraryServer {
+	return &LibraryServer{logic: logic}
 }
 
-func NewServer() *Server {
-	return &Server{}
-}
-
-func (s *Server) GetAuthor(ctx context.Context, in *pb.GetAuthorRequest) (*pb.GetAuthorResponse, error) {
+func (s *LibraryServer) GetAuthor(ctx context.Context, in *pb.GetAuthorRequest) (*pb.GetAuthorResponse, error) {
 	log.Println("getting author for", in)
-	return &pb.GetAuthorResponse{Books: []*pb.Book{
-		{Name: "Александр Беляев", Title: "Человек-амфибия"},
-	}}, nil
+	title := in.GetTitle()
+	books, err := s.logic.GetAuthor(ctx, title)
+	fmt.Println("books", books)
+	return &pb.GetAuthorResponse{Books: transferBooks(books)}, err
 }
 
-func (s *Server) GetBooks(ctx context.Context, in *pb.GetBooksRequest) (*pb.GetBooksResponse, error) {
+func (s *LibraryServer) GetBooks(ctx context.Context, in *pb.GetBooksRequest) (*pb.GetBooksResponse, error) {
 	log.Println("getting books for", in)
-	return &pb.GetBooksResponse{Books: []*pb.Book{
-		{Name: "Виктор Гюго", Title: "Отверженные"},
-		{Name: "Виктор Гюго", Title: "Собор Парижской Богоматери"}},
-	}, nil
+	author := in.GetName()
+	books, err := s.logic.GetTitle(ctx, author)
+	fmt.Println("books", books)
+	return &pb.GetBooksResponse{Books: transferBooks(books)}, err
+}
+
+func transferBooks(books *[]ob.BookDB) []*pb.Book {
+	booksPB := make([]*pb.Book, len(*books))
+	for i := 0; i < len(*books); i++ {
+		booksPB[i] = &pb.Book{
+			Name:  (*books)[i].Name,
+			Title: (*books)[i].Title,
+		}
+	}
+	return booksPB
 }
