@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	ob "github.com/Michael-Levitin/Library/LibraryService/internal/objects"
@@ -10,29 +9,34 @@ import (
 )
 
 const (
-	authorLikeQuery = `select name, title
+	authorLikeQuery = `SELECT name, title
 FROM library.books
 JOIN library.authors a on books.author_id = a.id
-WHERE title like '%Man%';`
+WHERE title like ?;`
 
-	authorExactQuery = `select name
+	authorExactQuery = `SELECT name, title
 FROM library.books
 JOIN library.authors a on books.author_id = a.id
-WHERE title = 'Amphibian Man';`
+WHERE title = ?;`
 
-	titleLikeQuery = `select name, title
+	titleLikeQuery = `SELECT name, title
 FROM library.books
 JOIN library.authors a on books.author_id = a.id
-WHERE name like '%Tols%';`
+WHERE name like ?;`
 
-	titleExactQuery = `select title
+	titleExactQuery = `SELECT name, title
 FROM library.books
 JOIN library.authors a on books.author_id = a.id
-WHERE name = 'Chechov';`
+WHERE name = ?;`
 )
 
 type LibraryDB struct {
 	db *sqlx.DB
+}
+
+type BookDb struct { // структура для получения данный из бд
+	Name  string `db:"name"`
+	Title string `db:"title"`
 }
 
 func NewLibraryDB(db *sqlx.DB) *LibraryDB {
@@ -40,51 +44,32 @@ func NewLibraryDB(db *sqlx.DB) *LibraryDB {
 }
 
 func (l LibraryDB) GetAuthorLike(ctx context.Context, name string) (*[]ob.BookDB, error) {
-	log.Println("database - getting books for name", name)
-	return l.FuncName(authorLikeQuery, name)
+	name = "%" + name + "%" // для поиска совпадений добавляем % около строки
+	return l.queryDo(authorLikeQuery, name)
 }
 
 func (l LibraryDB) GetAuthorExact(ctx context.Context, name string) (*[]ob.BookDB, error) {
-	log.Println("database - getting books for name", name)
-	return l.FuncName(authorExactQuery, name)
+	return l.queryDo(authorExactQuery, name)
 }
 func (l LibraryDB) GetTitleLike(ctx context.Context, title string) (*[]ob.BookDB, error) {
-	log.Println("database - getting books for title", title)
-	return l.FuncName(titleLikeQuery, title)
+	title = "%" + title + "%"
+	return l.queryDo(titleLikeQuery, title)
 }
 func (l LibraryDB) GetTitleExact(ctx context.Context, title string) (*[]ob.BookDB, error) {
-	log.Println("database - getting books for title", title)
-	return l.FuncName(titleExactQuery, title)
+	return l.queryDo(titleExactQuery, title)
 }
 
-func (l LibraryDB) FuncName(query, placeholder string) (*[]ob.BookDB, error) {
-	rows, err := l.db.Queryx(query)
-	log.Println(rows, err)
-	//if err != sql.ErrNoRows {
+func (l LibraryDB) queryDo(query, placeholder string) (*[]ob.BookDB, error) {
+	var booksDb []BookDb // создаем переменную для результатов
+	err := l.db.Select(&booksDb, query, placeholder)
 	if err != nil {
-		fmt.Println("error executing query:", err)
-		return &[]ob.BookDB{}, err
+		log.Println(err)
+		return nil, err
 	}
-	defer rows.Close()
 
-	var books []ob.BookDB
-	//var book ob.BookDB
-
-	// обработка результатов запроса
-	for rows.Next() {
-		var name, title string
-		//err = rows.Scan(&book.Name, &book.Title)
-		err = rows.Scan(&name, &title)
-		if err != nil {
-			fmt.Println("error scanning row:", err)
-			return &[]ob.BookDB{}, err
-		}
-		//log.Println(name, title)
-		books = append(books, ob.BookDB{name, title})
-	}
-	if err = rows.Err(); err != nil {
-		fmt.Println("error scanning rows:", err)
-		return &[]ob.BookDB{}, err
+	var books = make([]ob.BookDB, len(booksDb))
+	for i := 0; i < len(booksDb); i++ {
+		books[i] = ob.BookDB{booksDb[i].Name, booksDb[i].Title}
 	}
 	return &books, err
 }
