@@ -16,17 +16,17 @@ func NewLibraryLogic(LibraryDB LibraryDbI) *LibraryLogic {
 func (l LibraryLogic) GetAuthor(ctx context.Context, title string) (*[]ob.BookDB, error) {
 	books, err := l.LibraryDB.GetAuthorExact(ctx, title) // аналогично GetTitle
 	if err != nil {
-		return &[]ob.BookDB{}, err
+		return nil, err
 	}
 	if len(*books) > 0 {
-		return books, err
+		return books, nil
 	}
 
 	books, err = l.LibraryDB.GetAuthorLike(ctx, title)
 	if err != nil {
-		return &[]ob.BookDB{}, err
+		return nil, err
 	}
-	return books, err
+	return books, nil
 }
 
 func (l LibraryLogic) GetTitle(ctx context.Context, name string) (*[]ob.BookDB, error) {
@@ -36,7 +36,7 @@ func (l LibraryLogic) GetTitle(ctx context.Context, name string) (*[]ob.BookDB, 
 	}
 
 	if len(*books) > 0 { // если длина слайса книг > 0 - возвращаем его
-		return books, err
+		return books, nil
 	}
 	// если длина слайса книг = 0 - пробуем найти частичное совпадение
 	books, err = l.LibraryDB.GetTitleLike(ctx, name)
