@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"github.com/Michael-Levitin/Library/LibraryService/internal/library"
-	"github.com/Michael-Levitin/Library/LibraryService/internal/logic"
 	"log"
 	"net"
 	"testing"
@@ -22,7 +21,7 @@ var lis *bufconn.Listener
 func init() {
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	srv := library.NewLibraryServerMock(logic.LibraryLogic{})
+	srv := library.NewLibraryMockServer()
 	pb.RegisterLibrarySearchServer(s, srv)
 	go func() {
 		if err := s.Serve(lis); err != nil {
@@ -44,11 +43,11 @@ func TestServer_GetAuthor(t *testing.T) {
 	defer conn.Close()
 
 	client := pb.NewLibrarySearchClient(conn)
-	in := &pb.GetAuthorRequest{Title: "Человек-амфибия"}
+	in := &pb.GetAuthorRequest{Title: "Amphibian Man"}
 	resp, err := client.GetAuthor(ctx, in)
 	assert.NoError(t, err)
 	books := []*pb.Book{
-		{Name: "Александр Беляев", Title: "Человек-амфибия"},
+		{Name: "Alexander Belyaev", Title: "Amphibian Man"},
 	}
 	assert.Equal(t, books, resp.Books)
 }
@@ -62,12 +61,13 @@ func TestServer_GetBooks(t *testing.T) {
 	}
 	defer conn.Close()
 	client := pb.NewLibrarySearchClient(conn)
-	in := &pb.GetBooksRequest{Name: "Виктор Гюго"}
+	in := &pb.GetBooksRequest{Name: "Erich Maria Remarque"}
 	resp, err := client.GetBooks(ctx, in)
 	assert.NoError(t, err)
 	books := []*pb.Book{
-		{Name: "Виктор Гюго", Title: "Отверженные"},
-		{Name: "Виктор Гюго", Title: "Собор Парижской Богоматери"},
+		{Name: "Erich Maria Remarque", Title: "Three comrades"},
+		{Name: "Erich Maria Remarque", Title: "Arc de Triomphe"},
+		{Name: "Erich Maria Remarque", Title: "Black Obelisk"},
 	}
 	assert.Equal(t, books, resp.Books)
 }
