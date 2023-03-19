@@ -1,7 +1,9 @@
-package library
+package main
 
 import (
 	"context"
+	"github.com/Michael-Levitin/Library/LibraryService/internal/library"
+	"github.com/Michael-Levitin/Library/LibraryService/internal/logic"
 	"log"
 	"net"
 	"testing"
@@ -20,11 +22,11 @@ var lis *bufconn.Listener
 func init() {
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	srv := NewServer()
+	srv := library.NewLibraryServerMock(logic.LibraryLogic{})
 	pb.RegisterLibrarySearchServer(s, srv)
 	go func() {
 		if err := s.Serve(lis); err != nil {
-			log.Fatalf("Server exited with error: %v", err)
+			log.Fatalf("LibraryServer exited with error: %v", err)
 		}
 	}()
 }
