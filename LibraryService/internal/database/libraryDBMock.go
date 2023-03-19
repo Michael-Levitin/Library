@@ -8,14 +8,14 @@ import (
 
 var SomeError = errors.New("something wrong")
 
-type LibraryMockDB struct {
+type libraryDBMock struct {
 }
 
-func NewLibraryMockDB() *LibraryMockDB {
-	return &LibraryMockDB{}
+func NewLibraryDBMock() *libraryDBMock {
+	return &libraryDBMock{}
 }
 
-func (l LibraryMockDB) GetAuthorLike(ctx context.Context, name string) (*[]ob.BookDB, error) {
+func (l libraryDBMock) GetAuthorLike(ctx context.Context, name string) (*[]ob.BookDB, error) {
 	if name == "Man" {
 		return &[]ob.BookDB{
 			{"Alexander Belyaev", "Amphibian Man"},
@@ -27,7 +27,7 @@ func (l LibraryMockDB) GetAuthorLike(ctx context.Context, name string) (*[]ob.Bo
 	return &[]ob.BookDB{}, nil
 }
 
-func (l LibraryMockDB) GetAuthorExact(ctx context.Context, title string) (*[]ob.BookDB, error) {
+func (l libraryDBMock) GetAuthorExact(ctx context.Context, title string) (*[]ob.BookDB, error) {
 	if title == "Man" { // бд не содержит книг с точным названием "Man"
 		return &[]ob.BookDB{}, nil
 	}
@@ -39,7 +39,7 @@ func (l LibraryMockDB) GetAuthorExact(ctx context.Context, title string) (*[]ob.
 	return nil, SomeError
 }
 
-func (l LibraryMockDB) GetTitleLike(ctx context.Context, author string) (*[]ob.BookDB, error) {
+func (l libraryDBMock) GetTitleLike(ctx context.Context, author string) (*[]ob.BookDB, error) {
 	if author == "Chehov" { // "ищем" и возвращаем по частичному значение
 		return &[]ob.BookDB{
 			{"Anton Chekhov", "The Cherry Orchard"},
@@ -66,7 +66,7 @@ func (l LibraryMockDB) GetTitleLike(ctx context.Context, author string) (*[]ob.B
 	return &[]ob.BookDB{}, nil
 }
 
-func (l LibraryMockDB) GetTitleExact(ctx context.Context, author string) (*[]ob.BookDB, error) {
+func (l libraryDBMock) GetTitleExact(ctx context.Context, author string) (*[]ob.BookDB, error) {
 	if author == "Chehov" { // бд не содержит книг с точным автором "Chehov"
 		return &[]ob.BookDB{}, nil
 	}

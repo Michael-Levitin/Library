@@ -46,7 +46,7 @@ func TestLibraryLogic_GetAuthor(t *testing.T) {
 		},
 	}
 	l := LibraryLogic{
-		LibraryDB: db.NewLibraryMockDB(),
+		LibraryDB: db.NewLibraryDBMock(),
 	}
 	for _, tt := range tests {
 
@@ -118,7 +118,7 @@ func TestLibraryLogic_GetTitle(t *testing.T) {
 	}
 
 	l := LibraryLogic{
-		LibraryDB: db.NewLibraryMockDB(),
+		LibraryDB: db.NewLibraryDBMock(),
 	}
 
 	for _, tt := range tests {
