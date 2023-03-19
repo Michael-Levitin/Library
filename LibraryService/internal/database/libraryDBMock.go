@@ -2,11 +2,8 @@ package database
 
 import (
 	"context"
-	"errors"
 	ob "github.com/Michael-Levitin/Library/LibraryService/internal/objects"
 )
-
-var SomeError = errors.New("something wrong")
 
 type libraryDBMock struct {
 }
@@ -36,7 +33,7 @@ func (l libraryDBMock) GetAuthorExact(ctx context.Context, title string) (*[]ob.
 			{"Alexander Belyaev", "Amphibian Man"},
 		}, nil
 	}
-	return nil, SomeError
+	return nil, ob.SomeError
 }
 
 func (l libraryDBMock) GetTitleLike(ctx context.Context, author string) (*[]ob.BookDB, error) {
@@ -93,5 +90,5 @@ func (l libraryDBMock) GetTitleExact(ctx context.Context, author string) (*[]ob.
 		}, nil
 	}
 
-	return nil, SomeError
+	return nil, ob.SomeError
 }

@@ -42,7 +42,7 @@ func TestLibraryLogic_GetAuthor(t *testing.T) {
 			name:    "Error",
 			args:    args{ctx: context.Background(), title: ""},
 			want:    nil,
-			wantErr: db.SomeError,
+			wantErr: ob.SomeError,
 		},
 	}
 	l := LibraryLogic{
@@ -113,7 +113,7 @@ func TestLibraryLogic_GetTitle(t *testing.T) {
 			name:    "Error",
 			args:    args{ctx: context.Background(), name: ""},
 			want:    nil,
-			wantErr: db.SomeError,
+			wantErr: ob.SomeError,
 		},
 	}
 
