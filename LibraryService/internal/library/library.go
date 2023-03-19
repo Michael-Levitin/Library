@@ -21,17 +21,26 @@ func (s *LibraryServer) GetAuthor(ctx context.Context, in *pb.GetAuthorRequest) 
 	log.Println("getting author for", in)
 	title := in.GetTitle()
 	books, err := s.logic.GetAuthor(ctx, title)
-	return &pb.GetAuthorResponse{Books: transferBooks(books)}, err
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetAuthorResponse{Books: transferBooks(books)}, nil
 }
 
 func (s *LibraryServer) GetBooks(ctx context.Context, in *pb.GetBooksRequest) (*pb.GetBooksResponse, error) {
 	log.Println("getting books for", in)
 	author := in.GetName()
 	books, err := s.logic.GetTitle(ctx, author)
-	return &pb.GetBooksResponse{Books: transferBooks(books)}, err
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetBooksResponse{Books: transferBooks(books)}, nil
 }
 
 func transferBooks(books *[]ob.BookDB) []*pb.Book {
+	if books == nil {
+		return nil
+	}
 	booksPB := make([]*pb.Book, len(*books))
 	for i := 0; i < len(*books); i++ {
 		booksPB[i] = &pb.Book{
