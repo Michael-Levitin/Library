@@ -110,19 +110,35 @@ func TestLibraryServer_GetBooks(t *testing.T) {
 }
 
 func Test_transferBooks(t *testing.T) {
-	type args struct {
-		books *[]ob.BookDB
-	}
 	tests := []struct {
-		name string
-		args args
-		want []*pb.Book
+		name  string
+		books *[]ob.BookDB
+		want  []*pb.Book
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Data",
+			books: &[]ob.BookDB{
+				{Name: "Erich Maria Remarque", Title: "Three comrades"},
+				{Name: "Erich Maria Remarque", Title: "Arc de Triomphe"}},
+			want: []*pb.Book{
+				{Name: "Erich Maria Remarque", Title: "Three comrades"},
+				{Name: "Erich Maria Remarque", Title: "Arc de Triomphe"},
+			},
+		},
+		{
+			name:  "Empty",
+			books: &[]ob.BookDB{},
+			want:  []*pb.Book{},
+		},
+		{
+			name:  "Nil",
+			books: nil,
+			want:  nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := transferBooks(tt.args.books); !reflect.DeepEqual(got, tt.want) {
+			if got := transferBooks(tt.books); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("transferBooks() = %v, want %v", got, tt.want)
 			}
 		})
