@@ -1,18 +1,24 @@
 buildDB:
-	cd ./LibraryData && make build
+	cd ./LibraryData && $(MAKE) buildDB
 
-runDB:
-	cd ./LibraryData && make run
+startDB:
+	cd ./LibraryData && $(MAKE) startDB
+
+first:
+	cd ./LibraryService && $(MAKE) first
 
 server_start:
-	cd ./LibraryService && make server
+	cd ./LibraryService && $(MAKE) server_start
 
 client_start:
-	cd ./LibraryService && make client
+	cd ./LibraryService && $(MAKE) client_start
 
 
 #================
 stopDB:
-	cd ./LibraryData && make stop
+	cd ./LibraryData && $(MAKE) stop
+
+tests:
+	cd ./LibraryService && $(MAKE) tests
 
 

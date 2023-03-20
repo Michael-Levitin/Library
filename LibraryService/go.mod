@@ -6,6 +6,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/stretchr/testify v1.8.2
+	github.com/zhashkevych/go-sqlxmock v1.5.1
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.0
 )
