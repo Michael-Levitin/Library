@@ -16,6 +16,10 @@ var (
 	port = "5000"
 )
 
+type bSearch struct {
+	sel, query string
+}
+
 func main() {
 	// подключаемся к grpc серверу
 	addr := fmt.Sprintf("%s:%s", host, port)
@@ -27,54 +31,60 @@ func main() {
 	}
 	defer conn.Close()
 
-	grpcClient := pb.NewLibrarySearchClient(conn)
+	grpcClient := pb.NewLibrarySearchClient(conn) // передаем подключение в сервис
 
-	booksByAuthor, err := grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Tolstoy",
-	})
-	printAnswer(booksByAuthor.Books, err)
+	booksSearch := []bSearch{ // готовим запросы
+		{sel: "A", query: "Tolstoy"},
+		{sel: "a", query: "Lev Tolstoy"},
+		{sel: "A", query: "Chekhov"},
+		{sel: "A", query: "12312"},
+		{sel: "t", query: "Man"},
+		{sel: "T", query: "Amphibian Man"},
+		{sel: "T", query: "45554"},
+	}
 
-	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Lev Tolstoy",
-	})
-	printAnswer(booksByAuthor.Books, err)
-
-	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "Chekhov",
-	})
-	printAnswer(booksByAuthor.Books, err)
-
-	booksByAuthor, err = grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
-		Name: "1235",
-	})
-	printAnswer(booksByAuthor.Books, err)
-
-	booksByTitle, err := grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
-		Title: "Man",
-	})
-	printAnswer(booksByTitle.Books, err)
-
-	booksByTitle, err = grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
-		Title: "Amphibian Man",
-	})
-	printAnswer(booksByTitle.Books, err)
-
-	booksByTitle, err = grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
-		Title: "45554",
-	})
-	printAnswer(booksByTitle.Books, err)
+	for _, b := range booksSearch { // запускаем
+		selector(b.sel, b.query, grpcClient)
+	}
 }
 
+// выбираем нужную функцию на основании запроса
+func selector(sel, query string, grpcClient pb.LibrarySearchClient) {
+	switch sel {
+	case "t":
+		fallthrough
+	case "T":
+		books, err := grpcClient.GetAuthor(context.TODO(), &pb.GetAuthorRequest{
+			Title: query,
+		})
+		fmt.Println("Looking for books with title:", query)
+		printAnswer(books.Books, err)
+	case "a":
+		fallthrough
+	case "A":
+		books, err := grpcClient.GetBooks(context.TODO(), &pb.GetBooksRequest{
+			Name: query,
+		})
+		fmt.Println("Looking for books by author: ", query)
+		printAnswer(books.Books, err)
+	default:
+		fmt.Println("Unknown selector ", sel)
+	}
+}
+
+// печатаем результат
 func printAnswer(books []*pb.Book, err error) {
-	fmt.Println("==============================================")
 	if err != nil {
 		log.Println("failed to execute request: ", err)
 	}
-	if books == nil || len(books) == 0 {
-		return
+	if books != nil && len(books) != 0 {
+		fmt.Println("Author\t\tTitle")
+		fmt.Println("---------------------------------------")
+		for _, book := range books {
+			fmt.Println(book.Name, "-", book.Title)
+		}
+	} else {
+		fmt.Println(" - Nothing's found")
 	}
-	fmt.Println("\nAuthor\t\tTitle")
-	for _, book := range books {
-		fmt.Println(book.Name, "-", book.Title)
-	}
+	fmt.Println("==============================================")
 }
