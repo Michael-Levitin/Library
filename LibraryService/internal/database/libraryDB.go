@@ -14,20 +14,10 @@ FROM library.books
 JOIN library.authors a on books.author_id = a.id
 WHERE title like ?;`
 
-	authorExactQuery = `SELECT name, title
-FROM library.books
-JOIN library.authors a on books.author_id = a.id
-WHERE title = ?;`
-
 	titleLikeQuery = `SELECT name, title
 FROM library.books
 JOIN library.authors a on books.author_id = a.id
 WHERE name like ?;`
-
-	titleExactQuery = `SELECT name, title
-FROM library.books
-JOIN library.authors a on books.author_id = a.id
-WHERE name = ?;`
 )
 
 type LibraryDB struct {
@@ -48,15 +38,9 @@ func (l LibraryDB) GetAuthorLike(ctx context.Context, name string) (*[]ob.BookDB
 	return l.queryDo(authorLikeQuery, name)
 }
 
-func (l LibraryDB) GetAuthorExact(ctx context.Context, name string) (*[]ob.BookDB, error) {
-	return l.queryDo(authorExactQuery, name)
-}
 func (l LibraryDB) GetTitleLike(ctx context.Context, title string) (*[]ob.BookDB, error) {
 	title = "%" + title + "%"
 	return l.queryDo(titleLikeQuery, title)
-}
-func (l LibraryDB) GetTitleExact(ctx context.Context, title string) (*[]ob.BookDB, error) {
-	return l.queryDo(titleExactQuery, title)
 }
 
 func (l LibraryDB) queryDo(query, placeholder string) (*[]ob.BookDB, error) {

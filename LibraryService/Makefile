@@ -9,3 +9,6 @@ client_start:
 
 tests:
 	go test ./...
+
+tests2:
+	go test -v ./...

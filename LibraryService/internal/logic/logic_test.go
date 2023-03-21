@@ -10,7 +10,7 @@ import (
 
 func TestLibraryLogic_GetAuthor(t *testing.T) {
 	type fields struct {
-		LibraryDB LibraryDbI
+		LibraryDB db.LibraryDbI
 	}
 	type args struct {
 		ctx   context.Context
@@ -65,7 +65,7 @@ func TestLibraryLogic_GetAuthor(t *testing.T) {
 
 func TestLibraryLogic_GetTitle(t *testing.T) {
 	type fields struct {
-		LibraryDB LibraryDbI
+		LibraryDB db.LibraryDbI
 	}
 	type args struct {
 		ctx  context.Context
