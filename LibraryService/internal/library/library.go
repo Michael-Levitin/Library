@@ -10,10 +10,10 @@ import (
 
 type LibraryServer struct {
 	pb.UnimplementedLibrarySearchServer
-	logic logic.LibraryLogic
+	logic logic.LibraryLogicI
 }
 
-func NewLibraryServer(logic logic.LibraryLogic) *LibraryServer {
+func NewLibraryServer(logic logic.LibraryLogicI) *LibraryServer {
 	return &LibraryServer{logic: logic}
 }
 
